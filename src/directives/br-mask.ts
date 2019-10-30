@@ -8,6 +8,7 @@ export class BrMaskModel {
   person: boolean;
   phone: boolean;
   phoneNotDDD: boolean;
+  phoneRu: boolean;
   money: boolean;
   percent: boolean;
   type: 'alfa' | 'num' | 'all' = 'alfa';
@@ -119,6 +120,9 @@ export class BrMaskDirective implements OnInit {
     }
     if (value && config.phoneNotDDD) {
       return this.phoneNotDDDMask(value);
+    }
+    if (value && config.phoneRu) {
+      return this.phoneRu(value);
     }
     if (value && config.money) {
       return this.writeValueMoney(value, config);
@@ -456,4 +460,23 @@ export class BrMaskDirective implements OnInit {
     }
     return NovoValorCampo;
   }
+  
+  /**
+  * Russian telephone format
+  * @author Vladimir Amelkin <amel-07@mail.ru>
+  * @example <caption>this.phoneRu(string)</caption>
+  * @param {string} value
+  * @returns {string} string phone
+  */
+ private phoneRu(value: any): string {
+  let formValue = value;
+    this.brmasker.len = 10;
+    this.brmasker.mask = '(999)999-99-99';
+    //formValue = formValue.replace(/\D/gi, '');
+    formValue = formValue.replace(/(\d{3})(\d)/gi, '($1)');
+    formValue = formValue.replace(/(\d{3})(\d)/gi, '($1)$2');
+    formValue = formValue.replace(/(\d{2})(\d)/gi, '($1)$2-$3');
+    formValue = formValue.replace(/(\d{2})(\d)/gi, '($1)$2-$3-$4');
+  return this.onInput(formValue);
+ }
 }
